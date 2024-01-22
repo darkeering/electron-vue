@@ -11,9 +11,17 @@ export default defineConfig({
     vue(),
     vueJsx(),
     electron({
-      entry: "background.ts", // 主进程文件
+      entry: "background.js", // 主进程文件
     }),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        index: './index.html',
+        remind: './remind/remind.html'
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

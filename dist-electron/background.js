@@ -1,17 +1,18 @@
 "use strict";
 const electron = require("electron");
-const path = require("path");
+const { join } = require("path");
+let remindWindow;
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const createWindow = () => {
   const win = new electron.BrowserWindow({
     // 窗口图标
-    icon: path.join(__dirname, "resource/shortcut.ico"),
+    icon: join(__dirname, "resource/shortcut.ico"),
     width: 2e3,
     height: 1200,
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true,
-      preload: path.join(__dirname, "preload.js")
+      preload: join(__dirname, "../preload.js")
     }
   });
   electron.Menu.setApplicationMenu(null);
@@ -19,7 +20,7 @@ const createWindow = () => {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
   } else {
-    win.loadFile(path.join(__dirname, "dist/index.html"));
+    win.loadFile(join(__dirname, "dist/index.html"));
   }
 };
 electron.app.whenReady().then(() => {
@@ -33,3 +34,34 @@ electron.app.on("window-all-closed", () => {
   if (process.platform !== "darwin")
     electron.app.quit();
 });
+electron.ipcMain.on("add", (event, time, task) => {
+  createRemindWindow();
+});
+function createRemindWindow() {
+  if (remindWindow)
+    remindWindow.close();
+  remindWindow = new electron.BrowserWindow({
+    height: 450,
+    width: 360,
+    resizable: false,
+    frame: false,
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+  remindWindow.removeMenu();
+  remindWindow.getBounds();
+  remindWindow.setAlwaysOnTop(true);
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    remindWindow.loadURL(process.env.WEBPACK_DEV_SERVER_URL + "/remind.html");
+  }
+  remindWindow.show();
+  remindWindow.on("closed", () => {
+    remindWindow = null;
+  });
+  setTimeout(() => {
+    remindWindow && remindWindow.close();
+  }, 50 * 1e3);
+}
