@@ -1,5 +1,5 @@
-const { app, BrowserWindow } = require('electron')
-const { join } = require('path')
+import { BrowserWindow, Menu, app } from "electron"
+import { join } from "path"
 
 // 屏蔽安全警告
 // ectron Security Warning (Insecure Content-Security-Policy)
@@ -9,16 +9,18 @@ const createWindow = () => {
     const win = new BrowserWindow({
         // 窗口图标
         icon: join(__dirname, 'resource/shortcut.ico'),
-        width: 800,
-        height: 600,
+        width: 2000,
+        height: 1200,
         webPreferences: {
             contextIsolation: false,
             nodeIntegration: true,
-            preload: path.join(__dirname, 'preload.js')
+            preload: join(__dirname, 'preload.js')
         }
     })
     // 加载vue url视本地环境而定，如http://localhost:5173
     // win.loadURL('http://localhost:3000')
+
+    Menu.setApplicationMenu(null)
 
     // development模式
     if(process.env.VITE_DEV_SERVER_URL) {

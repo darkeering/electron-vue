@@ -11,7 +11,7 @@ export default defineConfig({
     vue(),
     vueJsx(),
     electron({
-      entry: "background.js", // 主进程文件
+      entry: "background.ts", // 主进程文件
     }),
   ],
   resolve: {
