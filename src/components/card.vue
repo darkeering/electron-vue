@@ -20,7 +20,7 @@ const props = defineProps<{card: {
       <p class="auth">{{props.card.auth}}</p>
       <p v-html="props.card.desc" class="desc"></p>
       <div class="tag">
-        <span class="left">{{props.card.left}}</span>
+        <span class="left" v-html="props.card.left"></span>
         <span v-if="props.card.right" class="right">{{props.card.right}}</span>
       </div>
     </div>

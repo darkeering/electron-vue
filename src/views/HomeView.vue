@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import Alert from '../components/alert.vue'
 import Card from '../components/card.vue'
 import { getAssetsFile } from '../util'
@@ -29,21 +30,209 @@ const news = [
 
 const chooses = [
   {
-    title: '2023年国游销量年榜正式发布',
-    auth: '国游销量榜',
-    desc: '2023年国产游戏销量榜单',
-    left: '2024-01-22',
+    title: '幻兽帕鲁/（国区礼物不是激活码）',
+    auth: '多人｜冒险｜休闲',
+    desc: '',
+    left: '<del>￥68.00</del>￥9.90',
     right: '-87%',
     src: getAssetsFile('河边露营')
+  },
+  {
+    title: '雷神加速器',
+    auth: '多人｜冒险｜休闲',
+    desc: '',
+    left: '<del>￥68.00</del>￥9.90',
+    right: '-87%',
+    src: getAssetsFile('酷炫快递员')
+  },
+  {
+    title: '猛兽派对',
+    auth: '多人｜冒险｜休闲',
+    desc: '',
+    left: '<del>￥68.00</del>￥9.90',
+    right: '-87%',
+    src: getAssetsFile('节日')
+  },
+  {
+    title: '绝地求生',
+    auth: '多人｜冒险｜休闲',
+    desc: '',
+    left: '<del>￥68.00</del>￥9.90',
+    right: '-87%',
+    src: getAssetsFile('恐龙陪读')
+  },
+  {
+    title: '战神4',
+    auth: '多人｜冒险｜休闲',
+    desc: '',
+    left: '<del>￥68.00</del>￥9.90',
+    right: '-87%',
+    src: getAssetsFile('思考')
+  },
+  {
+    title: '战神4',
+    auth: '多人｜冒险｜休闲',
+    desc: '',
+    left: '<del>￥68.00</del>￥9.90',
+    right: '-87%',
+    src: getAssetsFile('思考')
+  },
+  {
+    title: '怪物猎人',
+    auth: '多人｜冒险｜休闲',
+    desc: '',
+    left: '<del>￥68.00</del>￥9.90',
+    right: '-87%',
+    src: getAssetsFile('思考')
   }
 ]
+const menus = ref([
+  {
+    title: '起始页',
+    src: 'home'
+  },
+  {
+    title: '网络加速',
+    src: 'Thunder'
+  },
+  {
+    title: '帐号切换',
+    src: 'icon-crowd'
+  },
+  {
+    title: '库存游戏',
+    src: 'game'
+  },
+  {
+    title: '本地令牌',
+    src: 'MicrosoftAuthenticator'
+  },
+  {
+    title: 'Steam挂卡',
+    src: 'cards'
+  },
+  {
+    title: '游戏工具',
+    src: 'gongju'
+  }
+])
+let index = ref(0)
+const start = computed(() => index.value * 4)
+const end = computed(() => {
+  return (index.value + 1) * 4 > chooses.length ? chooses.length : (index.value + 1) * 4
+})
+function next() {
+  if (end.value >= chooses.length) {
+    index.value = 0
+    return
+  }
+  index.value++
+}
+function previous() {
+  if (start.value <= 0) {
+    index.value = Math.ceil(chooses.length / 4) - 1
+    return
+  }
+  index.value--
+}
+
+onMounted(() => {
+
+  let container = document.querySelector('.aaa')!
+  let items = document.querySelectorAll('.bbb')
+  let baseWidth = items[0].clientWidth + 20
+  let nodeLayout: { y: number; x: number; }[][] = []
+  //一行可以放多少个
+  let column = Math.floor(container.clientWidth / baseWidth)
+  //随机赋予初始高度
+  items.forEach((node: any, index) => {
+    node.style.height = `100px`
+  })
+  reset()
+  function reset() {
+    nodeLayout = []
+    let row = Math.floor(items.length / column)
+    if (row !== 0 && items.length % column !== 0) {
+      row = row + 1
+    }
+    for (let i = 1; i <= row; i++) {
+      nodeLayout.push([])
+    }
+    items.forEach((node: any, index) => {
+      //y轴坐标
+      const y = Math.floor(index / column)
+      //x轴坐标
+      const x = index % column
+      //生成视图对应的实例容器
+      node.x = x
+      node.y = y
+      node.isNode = true
+      nodeLayout[y].push(node)
+    })
+    console.table(nodeLayout)
+    //填充对象 方便后面变换顺序
+    for (let i = 0; i < column; i++) {
+      if (!nodeLayout[row - 1][i]) {
+        nodeLayout[row - 1][i] = { y: row - 1, x: i }
+      }
+    }
+    //设置top left
+    changStyle(nodeLayout)
+  }
+  function changStyle(Layout: any[]) {
+    Layout.forEach((arr: any[]) => {
+      arr.forEach((node: { isNode: any; y: number; x: number; style: { top: string; left: string; }; }) => {
+        if (node.isNode) {
+          if (node.y > 0) {
+            resetTop(getNode(node.x, node.y - 1), node)
+          } else {
+            node.style.top = `${20}px`
+          }
+          node.style.left = `${node.x * baseWidth + 20}px`
+        }
+      })
+    })
+  }
+  function getNode(x: string | number, y: number) {
+    if (!nodeLayout[y]) {
+      return '不存在该节点'
+    }
+    // @ts-ignore
+    if (!nodeLayout[y][x]) {
+      return '不存在该节点'
+    }
+    // @ts-ignore
+    return nodeLayout[y][x]
+  }
+  function resetTop(preNode: { style: { top: any; }; clientHeight: number; }, node: { style: { top: string; }; }) {
+    let str = preNode.style.top
+    let preTop = str.slice(0, str.length - 2) * 1
+    node.style.top = `${preTop + preNode.clientHeight + 20}px`
+  }
+  function resetLeft(preNode: { style: { left: any; }; }, node: { style: { left: string; }; }) {
+    let str = preNode.style.left
+    let preLeft = str.slice(0, str.length - 2) * 1
+    node.style.left = `${preLeft}px`
+  }
+  window.onresize = function () {
+    const newColumn = Math.floor(container.clientWidth / baseWidth)
+    if (newColumn !== column) {
+      column = newColumn
+      requestAnimationFrame(reset)
+    }
+  }
+})
+
 </script>
 
 <template>
   <div class="home">
     <div class="home-container">
       <Alert />
-      <h2>欢迎使用 Dar Toolkit</h2>
+      <div class="title">
+        <h1>欢迎使用 Dar Toolkit</h1>
+        <button>查看更多</button>
+      </div>
       <div class="welcome">
         <div class="img">
           <img :src="getAssetsFile('呼啸幽灵')" />
@@ -65,8 +254,28 @@ const chooses = [
         <h1>精选</h1>
         <button>访问DarGame商城</button>
       </div>
-      <div class="new">
-        <Card class="card" v-for="choose in chooses" :card="choose"></Card>
+      <div class="lunbo">
+        <i class="before" @click="() => previous()">&lt;</i>
+        <div
+          :style="{
+            transform: `translateX(${-100 * index}%)`,
+            transition: 'all 0.75s ease-in-out'
+          }"
+        >
+          <Card class="game" v-for="choose in chooses" :card="choose"></Card>
+        </div>
+        <i class="after" @click="() => next()">></i>
+      </div>
+      <div class="title">
+        <h1>已安装功能</h1>
+      </div>
+      <div>
+        <ul class="aaa">
+            <li class="bbb" v-for="menu in menus" :key="menu.title">
+              <img :src="getAssetsFile(menu.src)" alt="" />
+              <span> {{ menu.title }} </span>
+            </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -155,5 +364,99 @@ const chooses = [
   .card {
     width: 32.5%;
   }
+}
+.lunbo {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  .before {
+    position: absolute;
+    z-index: 1;
+    font-size: 24px;
+    line-height: 36px;
+    height: 36px;
+    width: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: #000;
+    opacity: 0.5;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  .after {
+    position: absolute;
+    z-index: 1;
+    font-size: 24px;
+    line-height: 36px;
+    height: 36px;
+    width: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: #000;
+    opacity: 0.5;
+    border-radius: 50%;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  .game {
+    display: inline-block;
+    width: 23.5%;
+    height: 300px;
+    margin-right: 2%;
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+  }
+}
+
+ul {
+  margin-top: 12px;
+  li {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    color: #fff;
+    padding: 20px;
+    background-color: #303538;
+    transition: all 0.3s;
+
+    img {
+      width: 75px;
+    }
+  }
+  li:hover {
+    background-color: #353b3f;
+  }
+}
+
+.list-move, /* 对移动中的元素应用的过渡 */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* 确保将离开的元素从布局流中删除
+  以便能够正确地计算移动的动画。 */
+.list-leave-active {
+  position: absolute;
 }
 </style>
