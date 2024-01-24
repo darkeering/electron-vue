@@ -137,17 +137,12 @@ function previous() {
 }
 
 onMounted(() => {
-
   let container = document.querySelector('.aaa')!
   let items = document.querySelectorAll('.bbb')
   let baseWidth = items[0].clientWidth + 20
-  let nodeLayout: { y: number; x: number; }[][] = []
+  let nodeLayout: { y: number; x: number }[][] = []
   //一行可以放多少个
   let column = Math.floor(container.clientWidth / baseWidth)
-  //随机赋予初始高度
-  items.forEach((node: any, index) => {
-    node.style.height = `100px`
-  })
   reset()
   function reset() {
     nodeLayout = []
@@ -181,16 +176,18 @@ onMounted(() => {
   }
   function changStyle(Layout: any[]) {
     Layout.forEach((arr: any[]) => {
-      arr.forEach((node: { isNode: any; y: number; x: number; style: { top: string; left: string; }; }) => {
-        if (node.isNode) {
-          if (node.y > 0) {
-            resetTop(getNode(node.x, node.y - 1), node)
-          } else {
-            node.style.top = `${20}px`
+      arr.forEach(
+        (node: { isNode: any; y: number; x: number; style: { top: string; left: string } }) => {
+          if (node.isNode) {
+            if (node.y > 0) {
+              resetTop(getNode(node.x, node.y - 1), node)
+            } else {
+              node.style.top = `${20}px`
+            }
+            node.style.left = `${node.x * baseWidth + 20}px`
           }
-          node.style.left = `${node.x * baseWidth + 20}px`
         }
-      })
+      )
     })
   }
   function getNode(x: string | number, y: number) {
@@ -204,12 +201,15 @@ onMounted(() => {
     // @ts-ignore
     return nodeLayout[y][x]
   }
-  function resetTop(preNode: { style: { top: any; }; clientHeight: number; }, node: { style: { top: string; }; }) {
+  function resetTop(
+    preNode: { style: { top: any }; clientHeight: number },
+    node: { style: { top: string } }
+  ) {
     let str = preNode.style.top
     let preTop = str.slice(0, str.length - 2) * 1
     node.style.top = `${preTop + preNode.clientHeight + 20}px`
   }
-  function resetLeft(preNode: { style: { left: any; }; }, node: { style: { left: string; }; }) {
+  function resetLeft(preNode: { style: { left: any } }, node: { style: { left: string } }) {
     let str = preNode.style.left
     let preLeft = str.slice(0, str.length - 2) * 1
     node.style.left = `${preLeft}px`
@@ -222,7 +222,6 @@ onMounted(() => {
     }
   }
 })
-
 </script>
 
 <template>
@@ -271,10 +270,10 @@ onMounted(() => {
       </div>
       <div>
         <ul class="aaa">
-            <li class="bbb" v-for="menu in menus" :key="menu.title">
-              <img :src="getAssetsFile(menu.src)" alt="" />
-              <span> {{ menu.title }} </span>
-            </li>
+          <li class="bbb" v-for="menu in menus" :key="menu.title">
+            <img :src="getAssetsFile(menu.src)" alt="" />
+            <span> {{ menu.title }} </span>
+          </li>
         </ul>
       </div>
     </div>
@@ -419,7 +418,15 @@ onMounted(() => {
 
 ul {
   margin-top: 12px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0 auto;
   li {
+    position: absolute;
+    transition: all 0.3s;
+    will-change: transform;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
