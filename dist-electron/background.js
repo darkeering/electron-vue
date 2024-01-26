@@ -20,7 +20,7 @@ const createWindow = () => {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
   } else {
-    win.loadFile(join(__dirname, "dist/index.html"));
+    win.loadFile(join(__dirname, "../dist/index.html"));
   }
 };
 electron.app.whenReady().then(() => {

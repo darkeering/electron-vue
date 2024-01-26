@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from '@/router';
 import {getAssetsFile} from '../util'
 import { ref } from 'vue'
 
@@ -6,11 +7,13 @@ const menus = ref([
   {
     title: '起始页',
     src: 'home',
-    active: true
+    active: true,
+    id: '/'
   },
   {
     title: '网络加速',
-    src: 'Thunder'
+    src: 'Thunder',
+    id: '/net'
   },
   {
     title: '帐号切换',
@@ -47,6 +50,7 @@ const setActive = (menu: any) => {
     m.active = false
     if(menu.title === m.title) m.active = true
   })
+  router.push(menu.id)
 }
 
 

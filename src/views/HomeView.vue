@@ -86,7 +86,7 @@ const chooses = [
     src: getAssetsFile('思考')
   }
 ]
-const menus = ref([
+const menus = [
   {
     title: '起始页',
     src: 'home'
@@ -115,7 +115,7 @@ const menus = ref([
     title: '游戏工具',
     src: 'gongju'
   }
-])
+]
 let index = ref(0)
 const start = computed(() => index.value * 4)
 const end = computed(() => {
@@ -146,11 +146,8 @@ onMounted(() => {
   reset()
   function reset() {
     nodeLayout = []
-    let row = Math.floor(items.length / column)
-    if (row !== 0 && items.length % column !== 0) {
-      row = row + 1
-    }
-    for (let i = 1; i <= row; i++) {
+    let row = Math.ceil(items.length / column)
+    for (let i = 0; i < row; i++) {
       nodeLayout.push([])
     }
     items.forEach((node: any, index) => {
@@ -164,7 +161,6 @@ onMounted(() => {
       node.isNode = true
       nodeLayout[y].push(node)
     })
-    console.table(nodeLayout)
     //填充对象 方便后面变换顺序
     for (let i = 0; i < column; i++) {
       if (!nodeLayout[row - 1][i]) {
@@ -247,7 +243,7 @@ onMounted(() => {
         <button>查看更多</button>
       </div>
       <div class="new">
-        <Card class="card" v-for="card in news" :card="card"></Card>
+        <Card class="card" v-for="card in news" :key="card.title" :card="card"></Card>
       </div>
       <div class="title">
         <h1>精选</h1>
@@ -255,13 +251,11 @@ onMounted(() => {
       </div>
       <div class="lunbo">
         <i class="before" @click="() => previous()">&lt;</i>
-        <div
-          :style="{
-            transform: `translateX(${-100 * index}%)`,
-            transition: 'all 0.75s ease-in-out'
-          }"
-        >
-          <Card class="game" v-for="choose in chooses" :card="choose"></Card>
+        <div :style="{
+          transform: `translateX(${-100 * index}%)`,
+          transition: 'all 0.75s ease-in-out'
+        }">
+          <Card class="game" v-for="choose in chooses" :key="choose.title" :card="choose"></Card>
         </div>
         <i class="after" @click="() => next()">></i>
       </div>
@@ -286,18 +280,22 @@ onMounted(() => {
   justify-content: center;
   width: 100%;
 }
+
 .home-container {
   width: 90%;
   max-width: 1240px;
   margin-top: 32px;
+
   h2 {
     color: #fff;
     margin-top: 10px;
   }
+
   h1 {
     color: #fff;
   }
 }
+
 .welcome {
   display: flex;
   background-color: #353b3e;
@@ -305,26 +303,31 @@ onMounted(() => {
   margin-top: 16px;
   border-radius: 6px;
   overflow: hidden;
+
   &:hover {
     img {
       transform: scale(1.2);
     }
   }
+
   .img {
     width: 50%;
     min-width: 620px;
     overflow: hidden;
     height: 100%;
     margin: 0;
+
     img {
       width: 100%;
       transition: all 0.25s;
     }
   }
+
   div {
     align-self: center;
     margin-left: 12px;
   }
+
   button {
     color: #fff;
     background-color: #0078d4;
@@ -337,6 +340,7 @@ onMounted(() => {
     font-size: 16px;
   }
 }
+
 .title {
   margin-top: 20px;
   display: flex;
@@ -350,11 +354,13 @@ onMounted(() => {
     padding: 6px 8px;
     border-radius: 4px;
     cursor: pointer;
+
     &:hover {
       background-color: #2f3539;
     }
   }
 }
+
 .new {
   display: flex;
   justify-content: space-between;
@@ -364,10 +370,12 @@ onMounted(() => {
     width: 32.5%;
   }
 }
+
 .lunbo {
   position: relative;
   overflow: hidden;
   white-space: nowrap;
+
   .before {
     position: absolute;
     z-index: 1;
@@ -386,6 +394,7 @@ onMounted(() => {
     transform: translateY(-50%);
     cursor: pointer;
   }
+
   .after {
     position: absolute;
     z-index: 1;
@@ -405,11 +414,13 @@ onMounted(() => {
     transform: translateY(-50%);
     cursor: pointer;
   }
+
   .game {
     display: inline-block;
     width: 23.5%;
     height: 300px;
     margin-right: 2%;
+
     &:nth-child(4n) {
       margin-right: 0;
     }
@@ -423,6 +434,7 @@ ul {
   flex-wrap: wrap;
   width: 100%;
   margin: 0 auto;
+
   li {
     position: absolute;
     transition: all 0.3s;
@@ -444,26 +456,8 @@ ul {
       width: 75px;
     }
   }
+
   li:hover {
     background-color: #353b3f;
   }
-}
-
-.list-move, /* 对移动中的元素应用的过渡 */
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-/* 确保将离开的元素从布局流中删除
-  以便能够正确地计算移动的动画。 */
-.list-leave-active {
-  position: absolute;
-}
-</style>
+}</style>

@@ -28,7 +28,7 @@ const createWindow = () => {
         // 开启调试台
         win.webContents.openDevTools()
     } else {
-        win.loadFile(join(__dirname, 'dist/index.html'))
+        win.loadFile(join(__dirname, '../dist/index.html'))
     }
 }
 

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "electron:build": "vite build && electron-builder",
+    "electron:build": "rimraf release && vite build && electron-builder",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
@@ -21,7 +21,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.3",
     "@tsconfig/node18": "^18.2.2",
-    "@types/node": "^18.19.3",
+    "@types/node": "^20.11.6",
     "@vitejs/plugin-vue": "^4.5.2",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "@vue/eslint-config-prettier": "^8.0.0",
