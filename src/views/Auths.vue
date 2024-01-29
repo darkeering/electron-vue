@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getAssetsFile } from '@/util'
 import { nextTick, onUnmounted, ref } from 'vue'
-import Panel from '../components/panel.vue'
+import dtabs from '../components/tabs.vue'
 const toogleButton: any = ref(null)
 const dropDown: any = ref(null)
 const pos = ref({
@@ -55,7 +55,7 @@ onUnmounted(() => {
 
 <template>
   <div style="padding: 20px">
-    <div class="flex justify-end">
+    <div class="flex justify-end" style="opacity: 0">
       <ul class="tabs">
         <li
           :class="{ active: tab.active }"
@@ -69,25 +69,27 @@ onUnmounted(() => {
     </div>
     <div class="title">
       <div class="logo">
-        <img :src="getAssetsFile('Thunder')" alt="" />
+        <img :src="getAssetsFile('icon-crowd')" alt="" />
       </div>
       <div class="desc">
-        <h1 style="color: #fff">网络加速</h1>
+        <h1 style="color: #fff">帐号切换</h1>
         <a style="margin: 0">作者：Darkeering</a>
-        <p style="font-size: 12px">提供一些游戏相关网站服务的加速以及脚本注入功能</p>
+        <p style="font-size: 12px">
+          可支持自行添加多平台帐号快速切换功能，Steam可自动读取帐号信息，其他平台请手动添加帐号信息
+        </p>
       </div>
       <ul class="actions">
         <li>
-          <img :src="getAssetsFile('Top Speed')" alt="" />
-          <button>一键加速</button>
+          <img :src="getAssetsFile('plus')" alt="" />
+          <button>登录新帐号</button>
+        </li>
+        <li>
+          <img style="transform: scale(1.4)" :src="getAssetsFile('分享')" alt="" />
+          <button>家庭共享库管理</button>
         </li>
         <li>
           <img :src="getAssetsFile('refresh')" alt="" />
           <button>刷新</button>
-        </li>
-        <li>
-          <img style="transform: scale(1.4)" :src="getAssetsFile('setting-1')" alt="" />
-          <button>加速设置</button>
         </li>
         <li ref="toogleButton">
           <button @click="() => toogle()">
@@ -96,12 +98,8 @@ onUnmounted(() => {
         </li>
       </ul>
     </div>
-    <div class="panels">
-      <Panel />
-      <Panel />
-      <Panel />
-      <Panel />
-      <Panel />
+    <div class="contents">
+      <dtabs />
     </div>
   </div>
   <Teleport to="body">
@@ -252,7 +250,7 @@ onUnmounted(() => {
   }
 }
 
-.panels {
+.contents {
   margin-top: 20px;
   height: calc(100vh - 240px);
   overflow: auto;

@@ -53,3 +53,15 @@ button {
 ::-webkit-scrollbar-thumb:hover {
 	background-clip: border-box;
 } 
+
+.flex {
+  display: flex;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.align-center {
+  align-items: center;
+}

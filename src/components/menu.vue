@@ -17,7 +17,8 @@ const menus = ref([
   },
   {
     title: '帐号切换',
-    src: 'icon-crowd'
+    src: 'icon-crowd',
+    id: '/auth'
   },
   {
     title: '库存游戏',

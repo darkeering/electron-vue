@@ -6,6 +6,6 @@ export function setTaskTimer() {
   ipcRenderer.send('add')
 }
 
-export function getAssetsFile(name: string) {
-  return new URL(`./assets/${name}.svg`, import.meta.url).href
+export function getAssetsFile(name: string, ext?: string) {
+  return new URL(`./assets/${name}.${ext?ext:'svg'}`, import.meta.url).href
 }
